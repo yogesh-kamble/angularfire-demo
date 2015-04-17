@@ -1,0 +1,52 @@
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    <script src="lib/angular.js"></script>
+    <script src="lib/firebase.js"></script>
+    <script src="lib/angularfire.min.js"></script>
+    <!-- <script src="app.js"></script> -->
+    <script>
+        angular.module('angularchatApp', ['firebase'])
+                .controller('ChatCtrl', function ($scope, $firebaseArray) {
+                    var ref = new Firebase('https://flickering-heat-9.firebaseio.com/messages')
+                    $scope.chatmessages = $firebaseArray(ref);
+
+                    $scope.sendMessage = function(){
+                        var params = {};
+                        params['name'] = $scope.name;
+                        params['message'] = $scope.message;
+                        $scope.chatmessages.$add(params);
+                        $scope.message = "";
+                    }
+                });
+    </script>
+</head>
+<body ng-app="angularchatApp">
+
+<div class="row marketing" ng-controller="ChatCtrl">
+    <h4>Chat App</h4>
+    <div id="chatbox">
+        <div class="msgln" ng-repeat="msg in chatmessages">
+            <p><b>{{msg.name}}</b>  {{msg.message}}</p>
+        </div>
+    </div>
+    <div>
+        <label>Enter Name</label>: <input type="text" ng-model="name"/>
+    </div>
+    <br/>
+    <div>
+        <label>Enter Mesg</label>: <textarea ng-model="message"></textarea>
+    </div>
+    <br/>
+    <div>
+        <input type="button" value="send" ng-click="sendMessage()"/>
+    </div>
+    <br/>
+</div>
+</body>
+</html>
